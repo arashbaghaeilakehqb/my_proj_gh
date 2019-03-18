@@ -1,0 +1,112 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in the kernelai docs under `Accessing data`
+# You can access the kernelai docs by running `kernelai docs`
+#
+# An example data set definition can look as follows:
+#
+
+#cars.csv:
+#  type: CsvLocalDataSet # http://kernel-ai-docs.qb.com/kernelai.io.html#kernelai.io.CsvLocalDataSet
+#  filepath: data/01_raw/company/cars.csv
+#  load_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
+#    sep: ','
+#    skiprows: 0
+#    # skipfooter: 1
+#    # engine: python  # Some of the features including skipfooter is only available in python engine
+#    engine: c  # This is a faster option
+#    na_values: ['#NA', 'NA']
+#  save_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html
+#    index: False
+#    date_format: '%Y-%m-%d %H:%M'
+#    decimal: '.'
+#
+#cars.csv.s3:
+#  type: CsvS3DataSet # http://kernel-ai-docs.qb.com/kernelai.io.html#kernelai.io.CsvS3DataSet
+#  filepath: data/02_intermediate/company/cars.csv
+#  credentials: dev_s3
+#  bucket_name: test_bucket
+#  region_name: us-east-1
+#  load_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
+#    sep: ','
+#    skiprows: 5
+#    skipfooter: 1
+#    na_values: ['#NA', 'NA']
+#    index: False
+#  save_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_csv.html
+#    index: False
+#    date_format: '%Y-%m-%d %H:%M'
+#    decimal: '.'
+#
+#cars.hdf:
+#  type: HdfDataSet  # http://kernel-ai-docs.qb.com/kernelai.io.html#kernelai.io.HdfDataSet
+#  filepath: data/02_intermediate/cars.hdf
+#  key: name
+#  load_args:  # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_hdf.html
+#    columns: ['engine', 'name']
+#  save_args:  # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_hdf.html
+#    mode: 'w'  # Overwrite even when the file already exists
+#    # mode: 'a'  # Appends or creates a file
+#    # mode: '+r'  # Appends an existing file
+#    dropna: True
+#
+#cars.parquet:
+#  type: ParquetLocalDataSet  # http://kernel-ai-docs.qb.com/kernelai.io.html#kernelai.io.ParquetLocalDataSet
+#  filepath: data/02_intermediate/cars.parquet
+#  load_args:
+#    columns: ['name', 'gear','disp', 'wt']
+#    categories: list
+#    filters: [['gear', '==', 4]]  # to filter out row-group. This will not filter all rows but works on row-groups.
+#    # For a short description of this filters refer to: https://github.com/quantumblack/asset-kernel-ai/wiki/IO:-Local-Parquet-Files
+#    index: 'name'
+#  save_args:
+#     row_group_offsets: 1  # This will put 10 in one row group. This should be left to fastparquet to decide.
+#     compression: 'GZIP'
+#     file_scheme: 'hive'
+#     has_nulls: false
+#     partition_on: ['name']
+#
+#cars.sql:
+#  type: SqlTableDataSet  # http://kernel-ai-docs.qb.com/kernelai.io.html#kernelai.io.SqlTableDataSet
+#  credentials: dev_postgres
+#  table_name: cars
+#  load_args:  # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_sql_table.html
+#    index_col: ['name']
+#    columns: ['name', 'gear']
+#  save_args:  # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_sql.html
+#    if_exists: 'replace'
+#    # if_exists: 'fail'
+#    # if_exists: 'append'
+#
+#cars.sql.query:
+#  type: SqlQueryDataSet  # http://kernel-ai-docs.qb.com/kernelai.io.html#kernelai.io.SqlQueryDataSet
+#  credentials: dev_postgres
+#  sql: 'select * from cars where gear=4'
+#  load_args:  # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_sql_query.html
+#    index_col: ['name']
+#
+#car_model.pkl:
+#  type: PickleLocalDataSet
+#  filepath: data/06_models/car_model.pkl
+#  backend: pickle
+#
+## Templating and reuse
+#
+#_csv: &csv
+#  type: kernelai.contrib.pyspark.io.spark_data_set.SparkDataSet
+#  file_format: 'csv'
+#  load_args:
+#    header: True
+#    inferSchema: False
+#
+#raw_banana_trials:
+#  <<: *csv
+#  filepath: "s3a://supermarket/01_raw/Banana/trials.csv"
+
+
+
+# This is a data set used by the example pipeline provided with the projected
+# template. Please feel free to remove it once you remove the example pipeline.
+example_iris_data:
+  type: CsvLocalDataSet
+  filepath: data/01_raw/iris.csv
